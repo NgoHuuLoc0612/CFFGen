@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════════════
+   CFFGen — editor.css
+   CodeMirror, preview editor, code display styles
+   ═══════════════════════════════════════════════ */
+
+/* ─── CodeMirror Full Override ─── */
+.CodeMirror-gutters {
+  background: transparent !important;
+  border-right: 1px solid var(--border) !important;
+}
+.CodeMirror-linenumber { color: var(--text-muted) !important; font-size: 0.75rem !important; }
+.CodeMirror-cursor { border-left: 2px solid var(--accent) !important; }
+.CodeMirror-selected { background: var(--accent-light) !important; }
+.CodeMirror-focused .CodeMirror-selected { background: rgba(108,99,255,0.2) !important; }
+.CodeMirror-activeline-background { background: var(--bg-hover) !important; }
+.CodeMirror-matchingbracket { color: var(--accent) !important; font-weight: bold !important; }
+.CodeMirror-foldgutter-open, .CodeMirror-foldgutter-folded {
+  color: var(--text-muted) !important;
+  cursor: pointer;
+}
+.CodeMirror-foldgutter-open:hover, .CodeMirror-foldgutter-folded:hover {
+  color: var(--accent) !important;
+}
+
+/* YAML syntax highlighting (light theme overrides) */
+[data-theme="light"] .cm-s-dracula .cm-keyword { color: #7c3aed !important; }
+[data-theme="light"] .cm-s-dracula .cm-string { color: #15803d !important; }
+[data-theme="light"] .cm-s-dracula .cm-atom { color: #0369a1 !important; }
+
+/* Scrollbar inside CodeMirror */
+.CodeMirror-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.CodeMirror-scroll::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 99px; }
+
+/* ─── Inline Code Preview Chip ─── */
+.code-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: var(--bg-surface3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  color: var(--accent);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.code-chip:hover { background: var(--accent-light); border-color: var(--accent); }
+
+/* ─── Fullscreen preview ─── */
+.preview-editor-wrap.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  border-radius: 0;
+  border: none;
+  background: var(--bg-base);
+}
+.preview-editor-wrap.fullscreen .CodeMirror {
+  min-height: 100vh !important;
+  height: 100vh !important;
+}
+.fullscreen-exit-btn {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 310;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition);
+}
+.fullscreen-exit-btn:hover { color: var(--text-primary); background: var(--bg-surface2); }
+
+/* ─── diff / patch view ─── */
+.diff-line-add { background: rgba(0,201,167,0.1); }
+.diff-line-remove { background: rgba(255,77,109,0.1); }

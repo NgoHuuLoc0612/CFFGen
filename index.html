@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CFFGen — CITATION.cff Generator</title>
+  <meta name="description" content="Professional CITATION.cff file generator with advanced features, validation, and export options." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+  <!-- Tippy.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/light.min.css" />
+
+  <!-- Toastify -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css" />
+
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css" />
+
+  <!-- Flatpickr -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css" />
+
+  <!-- SortableJS (no CSS needed) -->
+  <!-- Select2 -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+
+  <!-- Intro.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css" />
+
+  <!-- Shepherd.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/11.2.0/css/shepherd.min.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/editor.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════ LOADING SCREEN ═══════════════════════ -->
+<div id="loading-screen">
+  <div class="loader-content">
+    <div class="loader-logo">
+      <span class="logo-cff">CFF</span><span class="logo-gen">Gen</span>
+    </div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+    <div class="loader-text">Initializing workspace...</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+<aside id="sidebar" class="sidebar" data-intro="This is your navigation sidebar. Use it to switch between sections." data-step="1">
+  <div class="sidebar-header">
+    <div class="brand">
+      <div class="brand-icon"><i class="fa-solid fa-file-code"></i></div>
+      <div class="brand-text">
+        <span class="brand-name">CFFGen</span>
+        <span class="brand-version">v2.0.0</span>
+      </div>
+    </div>
+    <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Collapse sidebar">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">MAIN</div>
+    <button class="nav-item active" data-tab="overview" title="Overview" data-intro="Start with Overview to fill basic metadata." data-step="2">
+      <i class="fa-solid fa-house"></i>
+      <span>Overview</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="authors" title="Authors">
+      <i class="fa-solid fa-users"></i>
+      <span>Authors</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="identifiers" title="Identifiers">
+      <i class="fa-solid fa-fingerprint"></i>
+      <span>Identifiers</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="references" title="References">
+      <i class="fa-solid fa-book-open"></i>
+      <span>References</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="preferred-citation" title="Preferred Citation">
+      <i class="fa-solid fa-star"></i>
+      <span>Preferred Citation</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <div class="nav-section-label">TOOLS</div>
+    <button class="nav-item" data-tab="validator" title="Validator">
+      <i class="fa-solid fa-shield-check"></i>
+      <span>Validator</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="preview" title="Live Preview" data-intro="Preview your generated CITATION.cff file here." data-step="3">
+      <i class="fa-solid fa-eye"></i>
+      <span>Live Preview</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="import-export" title="Import / Export">
+      <i class="fa-solid fa-arrows-rotate"></i>
+      <span>Import / Export</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <button class="nav-item" data-tab="templates" title="Templates">
+      <i class="fa-solid fa-layer-group"></i>
+      <span>Templates</span>
+      <div class="nav-indicator"></div>
+    </button>
+    <div class="nav-section-label">SETTINGS</div>
+    <button class="nav-item" data-tab="settings" title="Settings">
+      <i class="fa-solid fa-gear"></i>
+      <span>Settings</span>
+      <div class="nav-indicator"></div>
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="validation-badge" id="sidebar-validation-badge">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="sidebar-validation-text">Not validated</span>
+    </div>
+    <div class="sidebar-actions">
+      <button id="theme-toggle" class="icon-btn" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+      <button id="tour-btn" class="icon-btn" title="Start tour"><i class="fa-solid fa-circle-question"></i></button>
+      <button id="keyboard-shortcuts-btn" class="icon-btn" title="Keyboard shortcuts"><i class="fa-solid fa-keyboard"></i></button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+<main id="main-content" class="main-content">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button id="mobile-menu-btn" class="icon-btn mobile-only"><i class="fa-solid fa-bars"></i></button>
+      <div class="breadcrumb" id="breadcrumb">
+        <span class="bc-root"><i class="fa-solid fa-file-code"></i> CITATION.cff</span>
+        <span class="bc-sep"><i class="fa-solid fa-chevron-right"></i></span>
+        <span class="bc-current" id="bc-current">Overview</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="progress-ring-wrap" title="Form completion">
+        <svg class="progress-ring" width="36" height="36">
+          <circle class="ring-bg" cx="18" cy="18" r="14"/>
+          <circle class="ring-fill" id="progress-ring-fill" cx="18" cy="18" r="14"/>
+        </svg>
+        <span class="progress-pct" id="progress-pct">0%</span>
+      </div>
+      <button id="quick-validate-btn" class="topbar-btn">
+        <i class="fa-solid fa-shield-check"></i> Validate
+      </button>
+      <button id="quick-copy-btn" class="topbar-btn topbar-btn--accent">
+        <i class="fa-solid fa-copy"></i> Copy CFF
+      </button>
+      <button id="quick-download-btn" class="topbar-btn topbar-btn--primary">
+        <i class="fa-solid fa-download"></i> Download
+      </button>
+    </div>
+  </header>
+
+  <!-- TABS CONTAINER -->
+  <div class="tabs-container">
+
+    <!-- ─── OVERVIEW TAB ─── -->
+    <section class="tab-panel active" id="tab-overview">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-house"></i> Overview</h1>
+        <p class="panel-subtitle">Basic metadata about your software or dataset</p>
+      </div>
+      <div class="form-grid">
+
+        <!-- CFF Version -->
+        <div class="field-group field-group--full">
+          <div class="field-row">
+            <div class="form-field">
+              <label class="field-label">
+                CFF Version <span class="required">*</span>
+                <i class="fa-solid fa-circle-info field-info" data-tippy="The version of the CFF format specification used."></i>
+              </label>
+              <div class="select-wrap">
+                <select id="cff-version" class="form-select">
+                  <option value="1.2.0" selected>1.2.0 (Latest)</option>
+                  <option value="1.1.0">1.1.0</option>
+                  <option value="1.0.3">1.0.3</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="field-label">
+                Message <span class="required">*</span>
+                <i class="fa-solid fa-circle-info field-info" data-tippy="A message to users of the software, asking them to cite it."></i>
+              </label>
+              <input type="text" id="cff-message" class="form-input" placeholder="If you use this software, please cite it using the metadata from this file." value="If you use this software, please cite it using the metadata from this file." />
+            </div>
+          </div>
+        </div>
+
+        <!-- Type -->
+        <div class="form-field">
+          <label class="field-label">
+            Type <span class="required">*</span>
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The type of work being described."></i>
+          </label>
+          <div class="type-selector" id="type-selector">
+            <button class="type-btn active" data-value="software">
+              <i class="fa-solid fa-code"></i>
+              <span>Software</span>
+            </button>
+            <button class="type-btn" data-value="dataset">
+              <i class="fa-solid fa-database"></i>
+              <span>Dataset</span>
+            </button>
+          </div>
+          <input type="hidden" id="cff-type" value="software" />
+        </div>
+
+        <!-- Title -->
+        <div class="form-field">
+          <label class="field-label">
+            Title <span class="required">*</span>
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The name of the software or dataset."></i>
+          </label>
+          <input type="text" id="cff-title" class="form-input" placeholder="My Awesome Software" />
+          <div class="field-hint">Full title of your software or dataset</div>
+        </div>
+
+        <!-- Version -->
+        <div class="form-field">
+          <label class="field-label">
+            Version
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The version of the software or dataset."></i>
+          </label>
+          <div class="input-with-tag">
+            <input type="text" id="cff-version-val" class="form-input" placeholder="1.0.0" />
+            <span class="input-tag">semver</span>
+          </div>
+        </div>
+
+        <!-- Date Released -->
+        <div class="form-field">
+          <label class="field-label">
+            Date Released
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The date the work was released. Format: YYYY-MM-DD"></i>
+          </label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-calendar-days input-icon"></i>
+            <input type="text" id="cff-date-released" class="form-input datepicker" placeholder="YYYY-MM-DD" />
+          </div>
+        </div>
+
+        <!-- Abstract -->
+        <div class="form-field form-field--full">
+          <label class="field-label">
+            Abstract
+            <i class="fa-solid fa-circle-info field-info" data-tippy="A description of the work."></i>
+          </label>
+          <textarea id="cff-abstract" class="form-textarea" rows="4" placeholder="A brief description of your software or dataset..."></textarea>
+          <div class="field-footer">
+            <span class="char-count"><span id="abstract-count">0</span> characters</span>
+          </div>
+        </div>
+
+        <!-- License -->
+        <div class="form-field">
+          <label class="field-label">
+            License
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The SPDX license identifier or expression for the work."></i>
+          </label>
+          <select id="cff-license" class="form-select license-select2">
+            <option value="">Select license...</option>
+          </select>
+          <span id="license-spdx-hint" class="spdx-hint"></span>
+        </div>
+
+        <!-- License URL -->
+        <div class="form-field">
+          <label class="field-label">
+            License URL
+            <i class="fa-solid fa-circle-info field-info" data-tippy="URL of the license text if not an SPDX identifier."></i>
+          </label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-link input-icon"></i>
+            <input type="url" id="cff-license-url" class="form-input" placeholder="https://..." />
+          </div>
+        </div>
+
+        <!-- Repository URL -->
+        <div class="form-field">
+          <label class="field-label">
+            Repository URL
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The URL of the repository where the software is available."></i>
+          </label>
+          <div class="input-icon-wrap">
+            <i class="fa-brands fa-git-alt input-icon"></i>
+            <input type="url" id="cff-repository" class="form-input" placeholder="https://github.com/user/repo" />
+          </div>
+        </div>
+
+        <!-- Repository Code -->
+        <div class="form-field">
+          <label class="field-label">
+            Repository (Code)
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The URL of the repository with the source code."></i>
+          </label>
+          <div class="input-icon-wrap">
+            <i class="fa-brands fa-github input-icon"></i>
+            <input type="url" id="cff-repository-code" class="form-input" placeholder="https://github.com/user/repo" />
+          </div>
+        </div>
+
+        <!-- Repository Artifact -->
+        <div class="form-field">
+          <label class="field-label">
+            Repository (Artifact)
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The URL of the repository where build artifacts are released."></i>
+          </label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-box input-icon"></i>
+            <input type="url" id="cff-repository-artifact" class="form-input" placeholder="https://pypi.org/project/..." />
+          </div>
+        </div>
+
+        <!-- URL -->
+        <div class="form-field">
+          <label class="field-label">
+            Website URL
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The URL of a landing page or website for the software."></i>
+          </label>
+          <div class="input-icon-wrap">
+            <i class="fa-solid fa-globe input-icon"></i>
+            <input type="url" id="cff-url" class="form-input" placeholder="https://example.com" />
+          </div>
+        </div>
+
+        <!-- DOI -->
+        <div class="form-field">
+          <label class="field-label">
+            DOI
+            <i class="fa-solid fa-circle-info field-info" data-tippy="The DOI of the software. Do not prefix with 'https://doi.org/'."></i>
+          </label>
+          <div class="input-with-tag">
+            <span class="input-prefix">10.</span>
+            <input type="text" id="cff-doi" class="form-input" placeholder="5281/zenodo.1234567" />
+          </div>
+        </div>
+
+        <!-- Keywords -->
+        <div class="form-field form-field--full">
+          <label class="field-label">
+            Keywords
+            <i class="fa-solid fa-circle-info field-info" data-tippy="Keywords that describe the work."></i>
+          </label>
+          <div id="keywords-container" class="tags-input-container">
+            <div class="tags-display" id="keywords-tags"></div>
+            <input type="text" id="keywords-input" class="tags-input" placeholder="Type a keyword and press Enter..." />
+          </div>
+          <div class="field-hint">Press Enter or comma to add a keyword</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── AUTHORS TAB ─── -->
+    <section class="tab-panel" id="tab-authors">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-users"></i> Authors</h1>
+        <p class="panel-subtitle">People and entities who authored the work</p>
+      </div>
+      <div class="list-toolbar">
+        <button class="btn btn--primary" id="add-author-btn">
+          <i class="fa-solid fa-plus"></i> Add Author
+        </button>
+        <button class="btn btn--secondary" id="add-entity-author-btn">
+          <i class="fa-solid fa-building"></i> Add Entity/Org
+        </button>
+        <button class="btn btn--ghost" id="fetch-github-authors-btn">
+          <i class="fa-brands fa-github"></i> Fetch from GitHub
+        </button>
+        <div class="list-toolbar-right">
+          <span class="item-count" id="authors-count">0 authors</span>
+          <button class="icon-btn" id="sort-authors-hint" title="Drag to reorder">
+            <i class="fa-solid fa-arrows-up-down"></i>
+          </button>
+        </div>
+      </div>
+      <div id="authors-list" class="items-list sortable-list" data-placeholder="No authors added yet. Click 'Add Author' to get started.">
+        <div class="empty-state" id="authors-empty">
+          <i class="fa-solid fa-users-slash"></i>
+          <p>No authors added yet</p>
+          <button class="btn btn--primary" onclick="document.getElementById('add-author-btn').click()">
+            <i class="fa-solid fa-plus"></i> Add First Author
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── IDENTIFIERS TAB ─── -->
+    <section class="tab-panel" id="tab-identifiers">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-fingerprint"></i> Identifiers</h1>
+        <p class="panel-subtitle">Unique identifiers for the work (DOI, URL, SWID, etc.)</p>
+      </div>
+      <div class="list-toolbar">
+        <button class="btn btn--primary" id="add-identifier-btn">
+          <i class="fa-solid fa-plus"></i> Add Identifier
+        </button>
+        <div class="list-toolbar-right">
+          <span class="item-count" id="identifiers-count">0 identifiers</span>
+        </div>
+      </div>
+      <div id="identifiers-list" class="items-list">
+        <div class="empty-state" id="identifiers-empty">
+          <i class="fa-solid fa-fingerprint"></i>
+          <p>No identifiers added yet</p>
+          <button class="btn btn--primary" onclick="document.getElementById('add-identifier-btn').click()">
+            <i class="fa-solid fa-plus"></i> Add Identifier
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── REFERENCES TAB ─── -->
+    <section class="tab-panel" id="tab-references">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-book-open"></i> References</h1>
+        <p class="panel-subtitle">Works referenced by this software or dataset</p>
+      </div>
+      <div class="list-toolbar">
+        <button class="btn btn--primary" id="add-reference-btn">
+          <i class="fa-solid fa-plus"></i> Add Reference
+        </button>
+        <button class="btn btn--ghost" id="import-bibtex-btn">
+          <i class="fa-solid fa-file-import"></i> Import BibTeX
+        </button>
+        <button class="btn btn--ghost" id="import-doi-btn">
+          <i class="fa-solid fa-magnifying-glass"></i> Fetch by DOI
+        </button>
+        <div class="list-toolbar-right">
+          <span class="item-count" id="references-count">0 references</span>
+        </div>
+      </div>
+      <div id="references-list" class="items-list sortable-list">
+        <div class="empty-state" id="references-empty">
+          <i class="fa-solid fa-book-open"></i>
+          <p>No references added yet</p>
+          <button class="btn btn--primary" onclick="document.getElementById('add-reference-btn').click()">
+            <i class="fa-solid fa-plus"></i> Add Reference
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PREFERRED CITATION TAB ─── -->
+    <section class="tab-panel" id="tab-preferred-citation">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-star"></i> Preferred Citation</h1>
+        <p class="panel-subtitle">Specify how you prefer the software to be cited (e.g., a paper)</p>
+      </div>
+      <div class="toggle-section">
+        <label class="toggle-label">
+          <span>Enable Preferred Citation</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="enable-preferred-citation" />
+            <span class="toggle-slider"></span>
+          </div>
+        </label>
+        <p class="toggle-hint">When enabled, users will be asked to cite the specified work instead of the software itself.</p>
+      </div>
+      <div id="preferred-citation-fields" class="collapsed">
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="field-label">Type <span class="required">*</span></label>
+            <select id="pc-type" class="form-select">
+              <option value="article">Journal Article</option>
+              <option value="book">Book</option>
+              <option value="conference-paper">Conference Paper</option>
+              <option value="edited-work">Edited Work</option>
+              <option value="report">Report</option>
+              <option value="thesis">Thesis</option>
+              <option value="software">Software</option>
+              <option value="dataset">Dataset</option>
+              <option value="misc">Misc</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Title <span class="required">*</span></label>
+            <input type="text" id="pc-title" class="form-input" placeholder="Paper or reference title" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Year</label>
+            <input type="number" id="pc-year" class="form-input" placeholder="2024" min="1900" max="2099" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">DOI</label>
+            <input type="text" id="pc-doi" class="form-input" placeholder="10.xxxx/xxxxx" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Journal / Publisher</label>
+            <input type="text" id="pc-journal" class="form-input" placeholder="Journal or publisher name" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Volume</label>
+            <input type="text" id="pc-volume" class="form-input" placeholder="12" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Issue</label>
+            <input type="text" id="pc-issue" class="form-input" placeholder="3" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Pages</label>
+            <input type="text" id="pc-pages" class="form-input" placeholder="123-145" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">URL</label>
+            <input type="url" id="pc-url" class="form-input" placeholder="https://..." />
+          </div>
+        </div>
+
+        <!-- PC Authors sub-section -->
+        <div class="subsection">
+          <div class="subsection-header">
+            <h3>Authors of Preferred Citation</h3>
+            <button class="btn btn--sm btn--primary" id="add-pc-author-btn"><i class="fa-solid fa-plus"></i> Add Author</button>
+          </div>
+          <div id="pc-authors-list" class="items-list items-list--compact">
+            <div class="empty-state empty-state--sm" id="pc-authors-empty">
+              <p>No preferred citation authors yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── VALIDATOR TAB ─── -->
+    <section class="tab-panel" id="tab-validator">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-shield-check"></i> Validator</h1>
+        <p class="panel-subtitle">Validate your CITATION.cff against the specification</p>
+      </div>
+      <div class="validator-controls">
+        <button class="btn btn--primary btn--lg" id="run-validation-btn">
+          <i class="fa-solid fa-play"></i> Run Validation
+        </button>
+        <button class="btn btn--secondary" id="validate-yaml-btn">
+          <i class="fa-solid fa-code"></i> Validate YAML Syntax
+        </button>
+        <button class="btn btn--ghost" id="validate-schema-btn">
+          <i class="fa-solid fa-sitemap"></i> Validate Schema
+        </button>
+      </div>
+      <div id="validation-results" class="validation-results">
+        <div class="validation-placeholder">
+          <i class="fa-solid fa-shield"></i>
+          <p>Run validation to check your CITATION.cff file</p>
+        </div>
+      </div>
+      <div class="validation-score-wrap" id="validation-score-wrap" style="display:none">
+        <div class="score-card">
+          <div class="score-circle">
+            <svg viewBox="0 0 100 100">
+              <circle class="score-bg" cx="50" cy="50" r="45"/>
+              <circle class="score-arc" id="score-arc" cx="50" cy="50" r="45"/>
+            </svg>
+            <span class="score-val" id="score-val">0</span>
+          </div>
+          <div class="score-details">
+            <div class="score-label">Completeness Score</div>
+            <div class="score-breakdown" id="score-breakdown"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PREVIEW TAB ─── -->
+    <section class="tab-panel" id="tab-preview">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-eye"></i> Live Preview</h1>
+        <p class="panel-subtitle">Real-time preview of your CITATION.cff</p>
+      </div>
+      <div class="preview-toolbar">
+        <div class="preview-tabs">
+          <button class="preview-tab-btn active" data-preview="cff">CFF YAML</button>
+          <button class="preview-tab-btn" data-preview="bibtex">BibTeX</button>
+          <button class="preview-tab-btn" data-preview="apa">APA</button>
+          <button class="preview-tab-btn" data-preview="mla">MLA</button>
+          <button class="preview-tab-btn" data-preview="json">JSON-LD</button>
+        </div>
+        <div class="preview-actions">
+          <button class="icon-btn" id="copy-preview-btn" title="Copy to clipboard"><i class="fa-solid fa-copy"></i></button>
+          <button class="icon-btn" id="wrap-toggle-btn" title="Toggle word wrap"><i class="fa-solid fa-text-width"></i></button>
+          <button class="icon-btn" id="fullscreen-preview-btn" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+        </div>
+      </div>
+      <div id="preview-editor-wrap" class="preview-editor-wrap">
+        <textarea id="preview-editor"></textarea>
+      </div>
+    </section>
+
+    <!-- ─── IMPORT/EXPORT TAB ─── -->
+    <section class="tab-panel" id="tab-import-export">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-arrows-rotate"></i> Import / Export</h1>
+        <p class="panel-subtitle">Import existing files or export in multiple formats</p>
+      </div>
+      <div class="ie-grid">
+        <!-- Import -->
+        <div class="ie-section">
+          <h2 class="ie-section-title"><i class="fa-solid fa-file-import"></i> Import</h2>
+          <div class="drop-zone" id="import-drop-zone">
+            <div class="drop-zone-content">
+              <i class="fa-solid fa-cloud-arrow-up drop-zone-icon"></i>
+              <p>Drag & drop a CITATION.cff or BibTeX file here</p>
+              <p class="drop-hint">or</p>
+              <label class="btn btn--primary" for="import-file-input">
+                <i class="fa-solid fa-folder-open"></i> Browse Files
+              </label>
+              <input type="file" id="import-file-input" accept=".cff,.bib,.json,.yaml,.yml" style="display:none" />
+            </div>
+          </div>
+          <div class="import-options">
+            <h3>Import from URL</h3>
+            <div class="url-import-row">
+              <input type="url" id="import-url-input" class="form-input" placeholder="https://raw.githubusercontent.com/.../CITATION.cff" />
+              <button class="btn btn--secondary" id="import-url-btn"><i class="fa-solid fa-download"></i> Fetch</button>
+            </div>
+            <div class="url-import-row" style="margin-top:0.75rem">
+              <input type="text" id="import-github-input" class="form-input" placeholder="owner/repo (GitHub shorthand)" />
+              <button class="btn btn--secondary" id="import-github-btn"><i class="fa-brands fa-github"></i> Fetch</button>
+            </div>
+            <div class="url-import-row" style="margin-top:0.75rem">
+              <input type="text" id="zenodo-sync-input" class="form-input" placeholder="10.5281/zenodo.1234567 or record ID" />
+              <button class="btn btn--secondary" id="zenodo-sync-btn"><i class="fa-solid fa-rotate"></i> Sync Zenodo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export -->
+        <div class="ie-section">
+          <h2 class="ie-section-title"><i class="fa-solid fa-file-export"></i> Export</h2>
+          <div class="export-options">
+            <div class="export-card" data-format="cff">
+              <div class="export-card-icon"><i class="fa-solid fa-file-code"></i></div>
+              <div class="export-card-info">
+                <div class="export-card-title">CITATION.cff</div>
+                <div class="export-card-desc">Standard CFF format (YAML)</div>
+              </div>
+              <button class="btn btn--primary btn--sm" onclick="CFFGen.exportAs('cff')">Download</button>
+            </div>
+            <div class="export-card" data-format="bibtex">
+              <div class="export-card-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+              <div class="export-card-info">
+                <div class="export-card-title">BibTeX (.bib)</div>
+                <div class="export-card-desc">LaTeX bibliography format</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="CFFGen.exportAs('bibtex')">Download</button>
+            </div>
+            <div class="export-card" data-format="ris">
+              <div class="export-card-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <div class="export-card-info">
+                <div class="export-card-title">RIS (.ris)</div>
+                <div class="export-card-desc">Reference manager format</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="CFFGen.exportAs('ris')">Download</button>
+            </div>
+            <div class="export-card" data-format="json">
+              <div class="export-card-icon"><i class="fa-solid fa-brackets-curly"></i></div>
+              <div class="export-card-info">
+                <div class="export-card-title">JSON-LD</div>
+                <div class="export-card-desc">Linked Data / Schema.org format</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="CFFGen.exportAs('jsonld')">Download</button>
+            </div>
+            <div class="export-card" data-format="codemeta">
+              <div class="export-card-icon"><i class="fa-solid fa-code-branch"></i></div>
+              <div class="export-card-info">
+                <div class="export-card-title">CodeMeta (codemeta.json)</div>
+                <div class="export-card-desc">Software metadata standard</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="CFFGen.exportAs('codemeta')">Download</button>
+            </div>
+            <div class="export-card" data-format="clipboard">
+              <div class="export-card-icon"><i class="fa-solid fa-clipboard"></i></div>
+              <div class="export-card-info">
+                <div class="export-card-title">Copy to Clipboard</div>
+                <div class="export-card-desc">Copy raw CFF content</div>
+              </div>
+              <button class="btn btn--ghost btn--sm" onclick="CFFGen.copyToClipboard()">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── TEMPLATES TAB ─── -->
+    <section class="tab-panel" id="tab-templates">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-layer-group"></i> Templates</h1>
+        <p class="panel-subtitle">Start quickly with a pre-filled template</p>
+      </div>
+      <div class="templates-search">
+        <div class="input-icon-wrap">
+          <i class="fa-solid fa-magnifying-glass input-icon"></i>
+          <input type="text" id="template-search" class="form-input" placeholder="Search templates..." />
+        </div>
+      </div>
+      <div class="templates-grid" id="templates-grid">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <!-- ─── SETTINGS TAB ─── -->
+    <section class="tab-panel" id="tab-settings">
+      <div class="panel-header">
+        <h1 class="panel-title"><i class="fa-solid fa-gear"></i> Settings</h1>
+        <p class="panel-subtitle">Customize CFFGen behavior and appearance</p>
+      </div>
+      <div class="settings-sections">
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">Appearance</h2>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Theme</div>
+              <div class="settings-desc">Light or dark interface</div>
+            </div>
+            <div class="settings-control">
+              <div class="theme-switcher">
+                <button class="theme-opt" data-theme="dark"><i class="fa-solid fa-moon"></i> Dark</button>
+                <button class="theme-opt active" data-theme="light"><i class="fa-solid fa-sun"></i> Light</button>
+                <button class="theme-opt" data-theme="system"><i class="fa-solid fa-circle-half-stroke"></i> System</button>
+              </div>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Editor Font Size</div>
+              <div class="settings-desc">Size of text in the preview editor</div>
+            </div>
+            <div class="settings-control">
+              <div class="slider-row">
+                <input type="range" id="font-size-slider" min="10" max="20" value="13" class="slider" />
+                <span id="font-size-val">13px</span>
+              </div>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Accent Color</div>
+              <div class="settings-desc">Primary accent color</div>
+            </div>
+            <div class="settings-control">
+              <div class="color-swatches" id="accent-swatches">
+                <button class="swatch active" style="background:#6C63FF" data-color="#6C63FF"></button>
+                <button class="swatch" style="background:#00C9A7" data-color="#00C9A7"></button>
+                <button class="swatch" style="background:#FF6584" data-color="#FF6584"></button>
+                <button class="swatch" style="background:#F9A825" data-color="#F9A825"></button>
+                <button class="swatch" style="background:#29B6F6" data-color="#29B6F6"></button>
+                <input type="color" id="custom-accent" value="#6C63FF" title="Custom color" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">Editor</h2>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Auto-save</div>
+              <div class="settings-desc">Save to localStorage every 30s</div>
+            </div>
+            <div class="settings-control">
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-autosave" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Real-time Preview</div>
+              <div class="settings-desc">Update preview as you type</div>
+            </div>
+            <div class="settings-control">
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-realtime" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">YAML Indentation</div>
+              <div class="settings-desc">Spaces per indent level</div>
+            </div>
+            <div class="settings-control">
+              <select id="setting-indent" class="form-select form-select--sm">
+                <option value="2" selected>2 spaces</option>
+                <option value="4">4 spaces</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">CodeMirror Theme</div>
+              <div class="settings-desc">Preview editor color theme</div>
+            </div>
+            <div class="settings-control">
+              <select id="setting-cm-theme" class="form-select form-select--sm">
+                <option value="dracula">Dracula</option>
+                <option value="eclipse">Eclipse</option>
+                <option value="default">Default</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">Data</h2>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Clear All Data</div>
+              <div class="settings-desc">Reset all fields to blank</div>
+            </div>
+            <div class="settings-control">
+              <button class="btn btn--danger btn--sm" id="clear-all-btn">
+                <i class="fa-solid fa-trash"></i> Clear All
+              </button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Export Settings</div>
+              <div class="settings-desc">Save settings as JSON</div>
+            </div>
+            <div class="settings-control">
+              <button class="btn btn--ghost btn--sm" id="export-settings-btn">
+                <i class="fa-solid fa-download"></i> Export
+              </button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-label">Import Settings</div>
+              <div class="settings-desc">Load settings from JSON</div>
+            </div>
+            <div class="settings-control">
+              <label class="btn btn--ghost btn--sm" for="import-settings-file">
+                <i class="fa-solid fa-upload"></i> Import
+              </label>
+              <input type="file" id="import-settings-file" accept=".json" style="display:none" />
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">About</h2>
+          <div class="about-card">
+            <div class="about-logo">CFFGen</div>
+            <div class="about-info">
+              <p><strong>Version:</strong> 2.0.0</p>
+              <p><strong>CFF Spec:</strong> 1.2.0</p>
+              <p><strong>License:</strong> MIT</p>
+              <p>Built for researchers and open-source developers to create standards-compliant <code>CITATION.cff</code> files effortlessly.</p>
+              <div class="about-links">
+                <a href="https://github.com/citation-file-format/citation-file-format" target="_blank" class="about-link">
+                  <i class="fa-brands fa-github"></i> CFF Spec
+                </a>
+                <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-citation-files" target="_blank" class="about-link">
+                  <i class="fa-brands fa-github"></i> GitHub Docs
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /tabs-container -->
+</main>
+
+<!-- ═══════════════════════ MODALS ═══════════════════════ -->
+
+<!-- Author Modal -->
+<div class="modal-overlay" id="author-modal-overlay">
+  <div class="modal" id="author-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title" id="author-modal-title">Add Author</h2>
+      <button class="modal-close" id="author-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="author-type-tabs">
+        <button class="author-type-tab active" data-author-type="person">
+          <i class="fa-solid fa-user"></i> Person
+        </button>
+        <button class="author-type-tab" data-author-type="entity">
+          <i class="fa-solid fa-building"></i> Entity / Org
+        </button>
+      </div>
+
+      <!-- Person Fields -->
+      <div id="author-person-fields">
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="field-label">Given Names</label>
+            <input type="text" id="author-given-names" class="form-input" placeholder="Jane" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Family Names <span class="required">*</span></label>
+            <input type="text" id="author-family-names" class="form-input" placeholder="Doe" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Name Particle</label>
+            <input type="text" id="author-name-particle" class="form-input" placeholder="van, de, von..." />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Name Suffix</label>
+            <input type="text" id="author-name-suffix" class="form-input" placeholder="Jr., Sr., III..." />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Email</label>
+            <input type="email" id="author-email" class="form-input" placeholder="jane@example.com" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Website</label>
+            <input type="url" id="author-website" class="form-input" placeholder="https://janedoe.dev" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">ORCID</label>
+            <div class="input-with-tag" style="display:flex;gap:0.5rem;align-items:center">
+              <div class="input-with-tag" style="flex:1">
+                <span class="input-prefix">orcid.org/</span>
+                <input type="text" id="author-orcid" class="form-input" placeholder="0000-0001-2345-6789" />
+              </div>
+              <button type="button" class="btn btn--secondary btn--sm" id="orcid-lookup-btn" title="Look up name from ORCID">
+                <i class="fa-solid fa-magnifying-glass"></i> Lookup
+              </button>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Affiliation</label>
+            <input type="text" id="author-affiliation" class="form-input" placeholder="University / Company" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Alias</label>
+            <input type="text" id="author-alias" class="form-input" placeholder="GitHub username" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Entity Fields -->
+      <div id="author-entity-fields" class="hidden">
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label class="field-label">Entity Name <span class="required">*</span></label>
+            <input type="text" id="author-entity-name" class="form-input" placeholder="Organization name" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Email</label>
+            <input type="email" id="author-entity-email" class="form-input" placeholder="info@org.org" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Website</label>
+            <input type="url" id="author-entity-website" class="form-input" placeholder="https://org.org" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Alias</label>
+            <input type="text" id="author-entity-alias" class="form-input" placeholder="org-alias" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Location</label>
+            <input type="text" id="author-entity-location" class="form-input" placeholder="City, Country" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Date Start</label>
+            <input type="text" id="author-entity-date-start" class="form-input datepicker" placeholder="YYYY-MM-DD" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Date End</label>
+            <input type="text" id="author-entity-date-end" class="form-input datepicker" placeholder="YYYY-MM-DD" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" id="author-modal-cancel">Cancel</button>
+      <button class="btn btn--primary" id="author-modal-save">
+        <i class="fa-solid fa-floppy-disk"></i> Save Author
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Identifier Modal -->
+<div class="modal-overlay" id="identifier-modal-overlay">
+  <div class="modal" id="identifier-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title">Add Identifier</h2>
+      <button class="modal-close" id="identifier-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label">Type <span class="required">*</span></label>
+          <select id="id-type" class="form-select">
+            <option value="doi">DOI</option>
+            <option value="url">URL</option>
+            <option value="swh">Software Heritage</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Value <span class="required">*</span></label>
+          <input type="text" id="id-value" class="form-input" placeholder="10.5281/zenodo.1234567" />
+        </div>
+        <div class="form-field form-field--full">
+          <label class="field-label">Description</label>
+          <input type="text" id="id-description" class="form-input" placeholder="Optional description" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" id="identifier-modal-cancel">Cancel</button>
+      <button class="btn btn--primary" id="identifier-modal-save">
+        <i class="fa-solid fa-floppy-disk"></i> Save Identifier
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Reference Modal -->
+<div class="modal-overlay" id="reference-modal-overlay">
+  <div class="modal modal--wide" id="reference-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title" id="reference-modal-title">Add Reference</h2>
+      <button class="modal-close" id="reference-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label">Type <span class="required">*</span></label>
+          <select id="ref-type" class="form-select">
+            <option value="article">Journal Article</option>
+            <option value="book">Book</option>
+            <option value="conference-paper">Conference Paper</option>
+            <option value="software">Software</option>
+            <option value="dataset">Dataset</option>
+            <option value="report">Report</option>
+            <option value="thesis">Thesis</option>
+            <option value="url">Web Resource</option>
+            <option value="misc">Misc</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Title <span class="required">*</span></label>
+          <input type="text" id="ref-title" class="form-input" placeholder="Title of the reference" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Year</label>
+          <input type="number" id="ref-year" class="form-input" placeholder="2024" min="1500" max="2099" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">DOI</label>
+          <input type="text" id="ref-doi" class="form-input" placeholder="10.xxxx/xxxx" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">URL</label>
+          <input type="url" id="ref-url" class="form-input" placeholder="https://..." />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Journal / Publisher</label>
+          <input type="text" id="ref-journal" class="form-input" placeholder="Journal name or publisher" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Volume</label>
+          <input type="text" id="ref-volume" class="form-input" placeholder="12" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Issue</label>
+          <input type="text" id="ref-issue" class="form-input" placeholder="3" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Pages</label>
+          <input type="text" id="ref-pages" class="form-input" placeholder="100--120" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Conference</label>
+          <input type="text" id="ref-conference" class="form-input" placeholder="Conference name" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">ISBN</label>
+          <input type="text" id="ref-isbn" class="form-input" placeholder="978-0-000-00000-0" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">ISSN</label>
+          <input type="text" id="ref-issn" class="form-input" placeholder="0000-0000" />
+        </div>
+        <div class="form-field form-field--full">
+          <label class="field-label">Notes / Abstract</label>
+          <textarea id="ref-notes" class="form-textarea" rows="3" placeholder="Optional notes"></textarea>
+        </div>
+      </div>
+      <!-- Reference Authors -->
+      <div class="subsection">
+        <div class="subsection-header">
+          <h3>Authors</h3>
+          <button class="btn btn--sm btn--primary" id="add-ref-author-btn"><i class="fa-solid fa-plus"></i> Add Author</button>
+        </div>
+        <div id="ref-authors-list" class="items-list items-list--compact">
+          <div class="empty-state empty-state--sm" id="ref-authors-empty"><p>No authors yet</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" id="reference-modal-cancel">Cancel</button>
+      <button class="btn btn--primary" id="reference-modal-save">
+        <i class="fa-solid fa-floppy-disk"></i> Save Reference
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- BibTeX Import Modal -->
+<div class="modal-overlay" id="bibtex-modal-overlay">
+  <div class="modal modal--wide" id="bibtex-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title">Import BibTeX</h2>
+      <button class="modal-close" id="bibtex-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Paste BibTeX entries below. They will be parsed and added as references.</p>
+      <textarea id="bibtex-input" class="form-textarea bibtex-textarea" rows="12" placeholder="@article{key2024,
+  title = {My Paper},
+  author = {Doe, Jane and Smith, John},
+  journal = {Journal of Science},
+  year = {2024},
+  doi = {10.1234/example}
+}"></textarea>
+      <div id="bibtex-parse-result" class="bibtex-parse-result"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" id="bibtex-modal-cancel">Cancel</button>
+      <button class="btn btn--secondary" id="bibtex-parse-btn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Parse
+      </button>
+      <button class="btn btn--primary" id="bibtex-import-btn" disabled>
+        <i class="fa-solid fa-file-import"></i> Import All
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DOI Fetch Modal -->
+<div class="modal-overlay" id="doi-modal-overlay">
+  <div class="modal" id="doi-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title">Fetch Reference by DOI</h2>
+      <button class="modal-close" id="doi-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Enter a DOI to fetch metadata from CrossRef.</p>
+      <div class="doi-input-row">
+        <div class="input-icon-wrap" style="flex:1">
+          <i class="fa-solid fa-magnifying-glass input-icon"></i>
+          <input type="text" id="doi-fetch-input" class="form-input" placeholder="10.5281/zenodo.1234567" />
+        </div>
+        <button class="btn btn--secondary" id="doi-fetch-btn">
+          <i class="fa-solid fa-search"></i> Fetch
+        </button>
+      </div>
+      <div id="doi-fetch-result" class="doi-fetch-result"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" id="doi-modal-cancel">Cancel</button>
+      <button class="btn btn--primary" id="doi-add-btn" disabled>
+        <i class="fa-solid fa-plus"></i> Add as Reference
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Keyboard Shortcuts Modal -->
+<div class="modal-overlay" id="shortcuts-modal-overlay">
+  <div class="modal" id="shortcuts-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title"><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</h2>
+      <button class="modal-close" id="shortcuts-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="shortcuts-grid">
+        <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>S</kbd><span>Download CITATION.cff</span></div>
+        <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>C</kbd>+<kbd>Shift</kbd><span>Copy CFF to clipboard</span></div>
+        <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>V</kbd>+<kbd>Shift</kbd><span>Validate</span></div>
+        <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>1-8</kbd><span>Switch tabs</span></div>
+        <div class="shortcut-row"><kbd>Ctrl</kbd>+<kbd>Z</kbd><span>Undo last change</span></div>
+        <div class="shortcut-row"><kbd>?</kbd><span>Show this dialog</span></div>
+        <div class="shortcut-row"><kbd>Esc</kbd><span>Close modal</span></div>
+        <div class="shortcut-row"><kbd>Alt</kbd>+<kbd>T</kbd><span>Toggle theme</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal-overlay">
+  <div class="modal modal--sm" id="confirm-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 class="modal-title" id="confirm-modal-title">Confirm</h2>
+      <button class="modal-close" id="confirm-modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-modal-message">Are you sure?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn--ghost" id="confirm-modal-no">Cancel</button>
+      <button class="btn btn--danger" id="confirm-modal-yes">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FLOATING ACTIONS ═══════════════════════ -->
+<div class="fab-group" id="fab-group">
+  <button class="fab fab--main" id="fab-main" title="Quick actions">
+    <i class="fa-solid fa-bolt"></i>
+  </button>
+  <div class="fab-menu" id="fab-menu">
+    <button class="fab fab--sm" onclick="CFFGen.exportAs('cff')" title="Download CFF">
+      <i class="fa-solid fa-download"></i>
+    </button>
+    <button class="fab fab--sm" onclick="CFFGen.copyToClipboard()" title="Copy CFF">
+      <i class="fa-solid fa-copy"></i>
+    </button>
+    <button class="fab fab--sm" onclick="CFFGen.runValidation()" title="Validate">
+      <i class="fa-solid fa-shield-check"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ NOTIFICATION CENTER ═══════════════════════ -->
+<div id="notification-center" class="notification-center"></div>
+
+<!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
+<!-- jQuery (required for Select2) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<!-- js-yaml -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+<!-- CodeMirror -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/yaml/yaml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/yaml-fold.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/search.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/display/placeholder.min.js"></script>
+
+<!-- Popper + Tippy -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.umd.min.js"></script>
+
+<!-- SortableJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+<!-- Toastify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+
+<!-- Flatpickr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+
+<!-- Select2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<!-- Lodash -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+<!-- Dayjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js"></script>
+
+<!-- Fuse.js (fuzzy search) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+
+<!-- FileSaver.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<!-- Marked (Markdown parser) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+
+<!-- DOMPurify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+
+<!-- Intro.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+
+<!-- Shepherd.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shepherd.js/11.2.0/shepherd.min.js"></script>
+
+<!-- NProgress -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+
+<!-- Hotkeys.js -->
+
+
+<!-- Confetti (for export celebration) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<!-- Clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+<!-- UUID -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuid.min.js"></script>
+
+<!-- Our App Scripts -->
+<script src="js/data.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/validator.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/authors.js"></script>
+<script src="js/references.js"></script>
+<script src="js/import-export.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/zenodo.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
